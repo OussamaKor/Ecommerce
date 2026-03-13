@@ -10,6 +10,9 @@ import { Store } from '../utils/Store';
 import DropdownLink from './DropdownLink';
 import { useRouter } from 'next/router';
 import SearchIcon from '@heroicons/react/24/outline/MagnifyingGlassIcon';
+import { FaInstagram } from 'react-icons/fa';
+import { ShoppingBagIcon } from '@heroicons/react/24/outline';
+import categories from '../utils/categories';
 
 export default function Layout({ title, children }) {
   const { status, data: session } = useSession();
@@ -30,6 +33,7 @@ export default function Layout({ title, children }) {
   const [query, setQuery] = useState('');
 
   const router = useRouter();
+  const isAdminRoute = router.pathname.startsWith('/admin');
   const submitHandler = (e) => {
     e.preventDefault();
     router.push(`/search?query=${query}`);
@@ -47,91 +51,164 @@ export default function Layout({ title, children }) {
 
       <div className="flex min-h-screen flex-col justify-between ">
         <header>
-          <nav className="flex h-12 items-center px-4 justify-between shadow-md">
-            <Link href="/" className="text-lg font-bold">
-              amazona
+          <nav className="flex h-20 items-center justify-between px-6 shadow-md bg-[#FCFCFA]">
+
+            {/* LOGO */}
+            <Link href="/" className="group flex flex-col leading-none">
+              <span className="font-script text-3xl text-brandGold tracking-wide">
+                ma&ya
+              </span>
+              <span className="mt-1 text-[10px] uppercase tracking-[0.35em] text-neutral-500">
+                Douce nuit
+              </span>
             </Link>
-            <form
-              onSubmit={submitHandler}
-              className="mx-auto  hidden  justify-center md:flex"
-            >
-              <input
-                onChange={(e) => setQuery(e.target.value)}
-                type="text"
-                className="rounded-tr-none rounded-br-none p-1 text-sm   focus:ring-0"
-                placeholder="Search products"
-              />
-              <button
-                className="rounded rounded-tl-none rounded-bl-none bg-amber-300 p-1 text-sm dark:text-black"
-                type="submit"
-                id="button-addon2"
+
+            {/* CATEGORIES */}
+            <div className="hidden md:flex items-center gap-8 text-sm uppercase tracking-widest text-neutral-600">
+              {categories.map((cat) => (
+                <Link
+                  key={cat.key}
+                  href={`/#${cat.key}`}
+                  className="hover:text-black transition"
+                >
+                  {cat.label}
+                </Link>
+              ))}
+            </div>
+
+            {/* RIGHT */}
+            <div className="flex items-center z-10 gap-2">
+
+              {/* CART */}
+              <Link
+                href="/cart"
+                className="relative flex items-center justify-center p-2 text-neutral-700 hover:text-black transition"
               >
-                <SearchIcon className="h-5 w-5"></SearchIcon>
-              </button>
-            </form>
-            <div className="flex items-center z-10">
-              <Link href="/cart" className="p-2">
-                Cart
+                <ShoppingBagIcon className="h-6 w-6" />
+
                 {cartItemsCount > 0 && (
-                  <span className="ml-1 rounded-full bg-red-600 px-2 py-1 text-xs font-bold text-white">
+                  <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-medium text-white">
                     {cartItemsCount}
                   </span>
                 )}
               </Link>
 
-              {status === 'loading' ? (
-                'Loading'
-              ) : session?.user ? (
-                <Menu as="div" className="relative inline-block">
-                  <Menu.Button className="text-blue-600">
-                    {session.user.name}
-                  </Menu.Button>
-                  <Menu.Items className="absolute right-0 w-56 origin-top-right bg-white  shadow-lg ">
-                    <Menu.Item>
-                      <DropdownLink className="dropdown-link" href="/profile">
-                        Profile
-                      </DropdownLink>
-                    </Menu.Item>
-                    <Menu.Item>
-                      <DropdownLink
-                        className="dropdown-link"
-                        href="/order-history"
-                      >
-                        Order History
-                      </DropdownLink>
-                    </Menu.Item>
-                    {session.user.isAdmin && (
-                      <Menu.Item>
-                        <DropdownLink
-                          className="dropdown-link"
-                          href="/admin/dashboard"
-                        >
-                          Admin Dashboard
-                        </DropdownLink>
-                      </Menu.Item>
-                    )}
-                    <Menu.Item>
-                      <a
-                        className="dropdown-link"
-                        href="#"
-                        onClick={logoutClickHandler}
-                      >
-                        Logout
-                      </a>
-                    </Menu.Item>
-                  </Menu.Items>
-                </Menu>
-              ) : (
-                <Link href="/login" className="p-2">
-                  Login
-                </Link>
+              {/* AUTH / ADMIN */}
+              {isAdminRoute && (
+                <>
+                  {status === 'loading' ? null : session?.user ? (
+                    <Menu as="div" className="relative inline-block">
+                      <Menu.Button className="text-sm text-neutral-700 hover:text-black transition">
+                        {session.user.name}
+                      </Menu.Button>
+
+                      <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right bg-white shadow-lg rounded-md">
+                        <Menu.Item>
+                          <DropdownLink href="/profile">Profile</DropdownLink>
+                        </Menu.Item>
+
+                        <Menu.Item>
+                          <DropdownLink href="/order-history">
+                            Order History
+                          </DropdownLink>
+                        </Menu.Item>
+
+                        {session.user.isAdmin && (
+                          <Menu.Item>
+                            <DropdownLink href="/admin/dashboard">
+                              Admin Dashboard
+                            </DropdownLink>
+                          </Menu.Item>
+                        )}
+
+                        <Menu.Item>
+                          <button
+                            className="dropdown-link w-full text-left"
+                            onClick={logoutClickHandler}
+                          >
+                            Logout
+                          </button>
+                        </Menu.Item>
+                      </Menu.Items>
+                    </Menu>
+                  ) : (
+                    <Link href="/login" className="p-2 text-sm text-neutral-700">
+                      Login
+                    </Link>
+                  )}
+                </>
               )}
             </div>
           </nav>
         </header>
-        <main className="container m-auto mt-4 px-4">{children}</main>
-        <footer className="flex h-10 justify-center items-center shadow-inner">
-          <p>Copyright © 2022 Amazona</p>
+        <main className="flex-1 h-12">{children}</main>
+        <footer className="mt-10 border-t border-neutral-200 bg-[#FCFCFA]">
+          <div className="mx-auto max-w-7xl px-6 py-14">
+
+            {/* TOP */}
+            <div className="relative grid grid-cols-1 gap-12 md:grid-cols-3 text-center">
+
+              {/* subtle pattern */}
+              <div className="pointer-events-none absolute inset-0 opacity-[0.03] bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:18px_18px]" />
+
+              {/* BRAND */}
+              <div className="relative">
+                <Link href="/" className="group flex flex-col leading-none">
+                  <span className="font-script text-3xl text-brandGold tracking-wide">
+                    ma&ya
+                  </span>
+
+                  <span className="mt-1 text-[10px] font-sans uppercase tracking-[0.35em] text-neutral-500">
+                    Douce nuit
+                  </span>
+                </Link>
+                <p className="mt-4 text-sm leading-relaxed text-neutral-600">
+                  Rue Ladhikia, AFH1<br />
+                  Nabeul
+                </p>
+              </div>
+
+              {/* CONTACT */}
+              <div className="relative">
+                <h3 className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-400">
+                  Contact
+                </h3>
+                <p className="mt-4 text-sm text-neutral-700">
+                  Téléphone : <span className="font-medium">+216 25 065 628</span>
+                </p>
+              </div>
+
+              {/* SOCIAL */}
+              <div className="relative">
+                <h3 className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-400">
+                  Follow us
+                </h3>
+
+                <a
+                  href="https://www.instagram.com/oussama.kordoghli"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-4 inline-flex items-center gap-3 text-sm text-neutral-600 hover:text-neutral-900 transition"
+                >
+                  <FaInstagram size={18} />
+                  Instagram
+                </a>
+              </div>
+            </div>
+
+            {/* BOTTOM */}
+            <div className="mt-14 border-t border-neutral-300 pt-6 text-center text-xs text-neutral-500">
+              © {new Date().getFullYear()} Nom d&apos;entreprise — Built by{' '}
+              <a
+                href="https://www.instagram.com/oussama.kordoghli"
+                target="_blank"
+                rel="noreferrer"
+                className="font-medium hover:text-neutral-900 transition"
+              >
+                Oussama Kordoghli
+              </a>
+            </div>
+          </div>
         </footer>
       </div>
     </>

@@ -45,6 +45,7 @@ function AdminUsersScreen() {
         dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
       }
     };
+
     if (successDelete) {
       dispatch({ type: 'DELETE_RESET' });
     } else {
@@ -53,14 +54,14 @@ function AdminUsersScreen() {
   }, [successDelete]);
 
   const deleteHandler = async (userId) => {
-    if (!window.confirm('Are you sure?')) {
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
       return;
     }
     try {
       dispatch({ type: 'DELETE_REQUEST' });
       await axios.delete(`/api/admin/users/${userId}`);
       dispatch({ type: 'DELETE_SUCCESS' });
-      toast.success('User deleted successfully');
+      toast.success('Utilisateur supprimé avec succès');
     } catch (err) {
       dispatch({ type: 'DELETE_FAIL' });
       toast.error(getError(err));
@@ -68,76 +69,117 @@ function AdminUsersScreen() {
   };
 
   return (
-    <Layout title="Users">
-      <div className="grid md:grid-cols-4 md:gap-5">
-        <div>
-          <ul>
-            <li>
-              <Link href="/admin/dashboard">Dashboard</Link>
-            </li>
-            <li>
-              <Link href="/admin/orders">Orders</Link>
-            </li>
-            <li>
-              <Link href="/admin/products">Products</Link>
-            </li>
-            <li>
-              <Link href="/admin/users" className="font-bold">
-                Users
-              </Link>
-            </li>
-          </ul>
-        </div>
-        <div className="overflow-x-auto md:col-span-3">
-          <h1 className="mb-4 text-xl">Users</h1>
-          {loadingDelete && <div>Deleting...</div>}
-          {loading ? (
-            <div>Loading...</div>
-          ) : error ? (
-            <div className="alert-error">{error}</div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full">
-                <thead className="border-b">
-                  <tr>
-                    <th className="px-5 text-left">ID</th>
-                    <th className="p-5 text-left">NAME</th>
-                    <th className="p-5 text-left">EMAIL</th>
-                    <th className="p-5 text-left">ADMIN</th>
-                    <th className="p-5 text-left">ACTIONS</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map((user) => (
-                    <tr key={user._id} className="border-b">
-                      <td className=" p-5 ">{user._id.substring(20, 24)}</td>
-                      <td className=" p-5 ">{user.name}</td>
-                      <td className=" p-5 ">{user.email}</td>
-                      <td className=" p-5 ">{user.isAdmin ? 'YES' : 'NO'}</td>
-                      <td className=" p-5 ">
-                        <Link
-                          href={`/admin/user/${user._id}`}
-                          passHref
-                          type="button"
-                          className="default-button"
+    <Layout title="Gestion des utilisateurs">
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="grid gap-6 md:grid-cols-4">
+
+            {/* SIDEBAR */}
+            <aside className="rounded-xl bg-white p-6 shadow">
+              <ul className="space-y-3 text-sm font-medium text-gray-700">
+                <li>
+                  <Link href="/admin/dashboard" className="hover:text-stone-600">
+                    Tableau de bord
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/admin/orders" className="hover:text-stone-600">
+                    Commandes
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/admin/products" className="hover:text-stone-600">
+                    Produits
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/admin/users"
+                    className="font-semibold text-stone-600"
+                  >
+                    Utilisateurs
+                  </Link>
+                </li>
+              </ul>
+            </aside>
+
+            {/* CONTENT */}
+            <div className="md:col-span-3">
+              <h1 className="mb-6 text-2xl font-semibold text-gray-800">
+                Gestion des utilisateurs
+              </h1>
+
+              {loadingDelete && (
+                <div className="mb-4 rounded-lg bg-yellow-100 p-4 text-sm">
+                  Suppression en cours...
+                </div>
+              )}
+
+              {loading ? (
+                <div className="rounded-lg bg-white p-6 shadow">
+                  Chargement...
+                </div>
+              ) : error ? (
+                <div className="rounded-lg bg-red-100 p-4 text-red-700 shadow">
+                  {error}
+                </div>
+              ) : (
+                <div className="rounded-xl bg-white shadow overflow-x-auto">
+                  <table className="min-w-full text-sm">
+                    <thead className="bg-gray-100 text-xs uppercase text-gray-500">
+                      <tr>
+                        <th className="px-4 py-3 text-left">ID</th>
+                        <th className="px-4 py-3 text-left">Nom</th>
+                        <th className="px-4 py-3 text-left">Email</th>
+                        <th className="px-4 py-3 text-left">Admin</th>
+                        <th className="px-4 py-3 text-left">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {users.map((user) => (
+                        <tr
+                          key={user._id}
+                          className="border-b hover:bg-gray-50"
                         >
-                          Edit
-                        </Link>
-                        &nbsp;
-                        <button
-                          type="button"
-                          className="default-button"
-                          onClick={() => deleteHandler(user._id)}
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                          <td className="px-4 py-3 font-medium">
+                            {user._id.substring(20, 24)}
+                          </td>
+                          <td className="px-4 py-3">{user.name}</td>
+                          <td className="px-4 py-3">{user.email}</td>
+                          <td className="px-4 py-3">
+                            {user.isAdmin ? (
+                              <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
+                                Oui
+                              </span>
+                            ) : (
+                              <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+                                Non
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3 space-x-2">
+                            <Link
+                              href={`/admin/user/${user._id}`}
+                              className="rounded bg-gray-100 px-3 py-1 text-xs hover:bg-gray-200"
+                            >
+                              Modifier
+                            </Link>
+                            <button
+                              onClick={() => deleteHandler(user._id)}
+                              className="rounded bg-red-100 px-3 py-1 text-xs text-red-700 hover:bg-red-200"
+                            >
+                              Supprimer
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
-          )}
+
+          </div>
         </div>
       </div>
     </Layout>

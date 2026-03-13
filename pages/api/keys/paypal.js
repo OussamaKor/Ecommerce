@@ -1,10 +1,9 @@
-import { getToken } from 'next-auth/jwt';
-
 const handler = async (req, res) => {
-  const user = await getToken({ req });
-  if (!user) {
-    return res.status(401).send('signin required');
+  if (req.method !== 'GET') {
+    return res.status(405).json({ message: 'Méthode non autorisée' });
   }
-  res.send(process.env.PAYPAL_CLIENT_ID || 'sb');
+
+  res.status(200).send(process.env.PAYPAL_CLIENT_ID || 'sb');
 };
+
 export default handler;

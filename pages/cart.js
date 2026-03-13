@@ -1,117 +1,164 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useContext } from 'react';
-import XCircleIcon from '@heroicons/react/24/outline/XCircleIcon';
 import Layout from '../components/Layout';
 import { Store } from '../utils/Store';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 
 function CartScreen() {
   const router = useRouter();
   const { state, dispatch } = useContext(Store);
+
   const {
     cart: { cartItems },
   } = state;
+
+  /* ---------- SUPPRIMER ---------- */
   const removeItemHandler = (item) => {
     dispatch({ type: 'CART_REMOVE_ITEM', payload: item });
   };
-  const updateCartHandler = async (item, qty) => {
+
+  /* ---------- METTRE À JOUR QTY ---------- */
+  const updateCartHandler = (item, qty) => {
     const quantity = Number(qty);
-    const { data } = await axios.get(`/api/products/${item._id}`);
-    if (data.countInStock < quantity) {
-      return toast.error('Sorry. Product is out of stock');
+
+    if (item.sizeStock < quantity) {
+      return toast.error('Désolé, cette taille est en rupture de stock');
     }
-    dispatch({ type: 'CART_ADD_ITEM', payload: { ...item, quantity } });
-    toast.success('Product updated in the cart');
+
+    dispatch({
+      type: 'CART_ADD_ITEM',
+      payload: { ...item, quantity },
+    });
+
+    toast.success('Produit mis à jour dans le panier');
   };
+
   return (
-    <Layout title="Shopping Cart">
-      <h1 className="mb-4 text-xl">Shopping Cart</h1>
-      {cartItems.length === 0 ? (
-        <div>
-          Cart is empty. <Link href="/">Go shopping</Link>
+    <Layout title="Mon Panier">
+      <div className="mx-auto max-w-7xl px-6 py-16">
+
+        {/* TITRE */}
+        <div className="mb-12 text-center">
+          <h1 className="text-2xl font-bold uppercase tracking-[0.15em] text-neutral-900">
+            Mon Panier
+          </h1>
         </div>
-      ) : (
-        <div className="grid md:grid-cols-4 md:gap-5">
-          <div className="overflow-x-auto md:col-span-3">
-            <table className="min-w-full ">
-              <thead className="border-b">
-                <tr>
-                  <th className="p-5 text-left">Item</th>
-                  <th className="p-5 text-right">Quantity</th>
-                  <th className="p-5 text-right">Price</th>
-                  <th className="p-5">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {cartItems.map((item) => (
-                  <tr key={item.slug} className="border-b">
-                    <td>
+
+        {cartItems.length === 0 ? (
+          <p className="text-neutral-500">
+            Votre panier est vide.{' '}
+            <Link href="/" className="underline">
+              Continuez vos achats !
+            </Link>
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_360px]">
+
+            {/* ---------- ARTICLES ---------- */}
+            <div className="space-y-10">
+              {cartItems.map((item) => (
+                <div
+                  key={`${item.slug}-${item.color}-${item.size}`}
+                  className="flex gap-6 border-b border-neutral-200 pb-10"
+                >
+                  {/* IMAGE */}
+                  <Link href={`/product/${item.slug}`}>
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      width={120}
+                      height={160}
+                      className="object-cover"
+                    />
+                  </Link>
+
+                  {/* INFOS */}
+                  <div className="flex flex-1 flex-col justify-between">
+                    <div>
                       <Link
                         href={`/product/${item.slug}`}
-                        className="flex items-center"
+                        className="block text-lg font-medium"
                       >
-                        <Image
-                          src={item.image}
-                          alt={item.name}
-                          width={50}
-                          height={50}
-                          style={{
-                            maxWidth: '100%',
-                            height: 'auto',
-                          }}
-                        ></Image>
                         {item.name}
                       </Link>
-                    </td>
-                    <td className="p-5 text-right">
+
+                      {/* VARIANTES */}
+                      <p className="mt-2 text-sm text-neutral-500">
+                        Couleur : <span className="font-medium">{item.color}</span>
+                      </p>
+                      <p className="text-sm text-neutral-500">
+                        Taille : <span className="font-medium">{item.size}</span>
+                      </p>
+
+                      <p className="mt-4 text-sm font-medium">
+                        {item.price} DT
+                      </p>
+                    </div>
+
+                    {/* ACTIONS */}
+                    <div className="flex items-center gap-6 text-sm">
                       <select
                         value={item.quantity}
                         onChange={(e) =>
                           updateCartHandler(item, e.target.value)
                         }
+                        className="rounded border px-3 py-1 text-sm"
                       >
-                        {[...Array(item.countInStock).keys()].map((x) => (
+                        {[...Array(item.sizeStock).keys()].map((x) => (
                           <option key={x + 1} value={x + 1}>
-                            {x + 1}
+                            Quantité {x + 1}
                           </option>
                         ))}
                       </select>
-                    </td>
-                    <td className="p-5 text-right">${item.price}</td>
-                    <td className="p-5 text-center">
-                      <button onClick={() => removeItemHandler(item)}>
-                        <XCircleIcon className="h-5 w-5"></XCircleIcon>
+
+                      <button
+                        onClick={() => removeItemHandler(item)}
+                        className="text-neutral-500 hover:text-black transition"
+                      >
+                        Supprimer
                       </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="card p-5">
-            <ul>
-              <li>
-                <div className="pb-3 text-xl">
-                  Subtotal ({cartItems.reduce((a, c) => a + c.quantity, 0)}) : $
-                  {cartItems.reduce((a, c) => a + c.quantity * c.price, 0)}
+                    </div>
+                  </div>
                 </div>
-              </li>
-              <li>
-                <button
-                  onClick={() => router.push('login?redirect=/shipping')}
-                  className="primary-button w-full"
-                >
-                  Check Out
-                </button>
-              </li>
-            </ul>
+              ))}
+            </div>
+
+            {/* ---------- RÉCAPITULATIF ---------- */}
+            <div className="sticky top-32 h-fit rounded-xl border border-neutral-200 p-8">
+              <h2 className="mb-6 text-sm font-medium uppercase tracking-widest">
+                Récapitulatif
+              </h2>
+
+              <div className="flex justify-between text-sm mb-4">
+                <span>Articles</span>
+                <span>
+                  {cartItems.reduce((a, c) => a + c.quantity, 0)}
+                </span>
+              </div>
+
+              <div className="flex justify-between text-lg font-medium mb-8">
+                <span>Total</span>
+                <span>
+                  {cartItems.reduce(
+                    (a, c) => a + c.quantity * c.price,
+                    0
+                  )} DT
+                </span>
+              </div>
+
+              <button
+                onClick={() => router.push('/shipping')}
+                className="w-full bg-black py-4 text-sm uppercase tracking-widest text-white hover:bg-neutral-900 transition"
+              >
+                Finaliser la commande
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </Layout>
   );
 }

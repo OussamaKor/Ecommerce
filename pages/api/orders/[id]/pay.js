@@ -1,32 +1,45 @@
-import { getToken } from 'next-auth/jwt';
 import Order from '../../../../models/Order';
 import db from '../../../../utils/db';
 
 const handler = async (req, res) => {
-  const user = await getToken({ req });
-  if (!user) {
-    return res.status(401).send('Error: signin required');
+  if (req.method !== 'PUT') {
+    return res.status(405).json({ message: 'Méthode non autorisée' });
   }
 
-  await db.connect();
-  const order = await Order.findById(req.query.id);
-  if (order) {
-    if (order.isPaid) {
-      return res.status(400).send({ message: 'Error: order is already paid' });
+  try {
+    await db.connect();
+
+    const order = await Order.findById(req.query.id);
+
+    if (!order) {
+      await db.disconnect();
+      return res.status(404).json({ message: 'Commande introuvable' });
     }
+
+    if (order.isPaid) {
+      await db.disconnect();
+      return res.status(400).json({ message: 'Commande déjà payée' });
+    }
+
     order.isPaid = true;
-    order.paidAt = Date.now();
+    order.paidAt = new Date();
     order.paymentResult = {
-      id: req.body.id,
-      status: req.body.status,
-      email_address: req.body.email_address,
+      id: req.body?.id || null,
+      status: req.body?.status || 'COMPLETED',
+      email_address: req.body?.email_address || null,
     };
+
     const paidOrder = await order.save();
+
     await db.disconnect();
-    res.send({ message: 'order paid successfully', order: paidOrder });
-  } else {
+
+    res.status(200).json({
+      message: 'Commande payée avec succès',
+      order: paidOrder,
+    });
+  } catch (error) {
     await db.disconnect();
-    res.status(404).send({ message: 'Error: order not found' });
+    res.status(500).json({ message: 'Erreur serveur' });
   }
 };
 

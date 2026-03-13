@@ -8,89 +8,196 @@ const data = {
       password: bcrypt.hashSync('123456'),
       isAdmin: true,
     },
-    {
-      name: 'Jane',
-      email: 'user@example.com',
-      password: bcrypt.hashSync('123456'),
-      isAdmin: false,
-    },
   ],
   products: [
     {
       name: 'Free Shirt',
       slug: 'free-shirt',
-      category: 'Shirts',
+      category: 'sous-vetements',
       image: '/images/shirt1.jpg',
       price: 70,
       brand: 'Nike',
       rating: 4.5,
       numReviews: 8,
-      countInStock: 20,
       description: 'A popular shirt',
       isFeatured: true,
-      banner: '/images/banner1.jpg',
+      banner: '/images/banner3.webp',
+
+      colors: [
+        {
+          name: 'Black',
+          images: ['/images/shirt1.jpg'],
+          sizes: [
+            { name: 'S', countInStock: 5 },
+            { name: 'M', countInStock: 8 },
+            { name: 'L', countInStock: 7 },
+          ],
+        },
+      ],
     },
+
+    {
+      name: 'Claquette en coton',
+      slug: 'claquette-coton',
+      category: 'claquettes',
+      image: '/images/claquette-beige-1.jpg',
+      price: 39,
+      brand: 'Zara',
+      description: 'Pyjama confortable en coton',
+
+      colors: [
+        {
+          name: 'Beige',
+          images: [
+            '/images/claquette-beige-1.jpg',
+            '/images/claquette-beige-2.jpg',
+            '/images/claquette-beige-3.jpg',
+          ],
+          sizes: [
+            { name: '36', countInStock: 3 },
+            { name: '38', countInStock: 4 },
+            { name: '40', countInStock: 2 },
+          ],
+        },
+        {
+          name: 'Black',
+          images: [
+            '/images/claquette-noir-1.jpg',
+            '/images/claquette-noir-2.jpg',
+            '/images/claquette-noir-3.jpg',
+          ],
+          sizes: [
+            { name: '36', countInStock: 2 },
+            { name: '38', countInStock: 1 },
+            { name: '40', countInStock: 0 },
+          ],
+        },
+        {
+          name: 'Tan',
+          images: ['/images/claquette-marron-1.jpg'],
+          sizes: [
+            { name: '38', countInStock: 2 },
+          ],
+        },
+      ],
+    },
+
     {
       name: 'Fit Shirt',
       slug: 'fit-shirt',
-      category: 'Shirts',
+      category: 'cap-de-bain',
       image: '/images/shirt2.jpg',
       price: 80,
       brand: 'Adidas',
       rating: 3.2,
       numReviews: 10,
-      countInStock: 20,
       description: 'A popular shirt',
       isFeatured: true,
-      banner: '/images/banner2.jpg',
+      banner: '/images/banner3.webp',
+
+      colors: [
+        {
+          name: 'Blue',
+          images: ['/images/shirt2.jpg'],
+          sizes: [
+            { name: 'S', countInStock: 6 },
+            { name: 'M', countInStock: 5 },
+            { name: 'L', countInStock: 9 },
+          ],
+        },
+      ],
     },
+
     {
       name: 'Slim Shirt',
       slug: 'slim-shirt',
-      category: 'Shirts',
+      category: 'pyjamas',
       image: '/images/shirt3.jpg',
       price: 90,
       brand: 'Raymond',
       rating: 4.5,
       numReviews: 3,
-      countInStock: 20,
       description: 'A popular shirt',
+
+      colors: [
+        {
+          name: 'White',
+          images: ['/images/shirt3.jpg'],
+          sizes: [
+            { name: 'M', countInStock: 10 },
+            { name: 'L', countInStock: 5 },
+          ],
+        },
+      ],
     },
+
     {
       name: 'Golf Pants',
       slug: 'golf-pants',
-      category: 'Pants',
+      category: 'sous-vetements',
       image: '/images/pants1.jpg',
       price: 90,
       brand: 'Oliver',
       rating: 2.9,
       numReviews: 13,
-      countInStock: 20,
       description: 'Smart looking pants',
+
+      colors: [
+        {
+          name: 'Grey',
+          images: ['/images/pants1.jpg'],
+          sizes: [
+            { name: 'M', countInStock: 8 },
+            { name: 'L', countInStock: 12 },
+          ],
+        },
+      ],
     },
+
     {
       name: 'Fit Pants',
       slug: 'fit-pants',
-      category: 'Pants',
+      category: 'cap-de-bain',
       image: '/images/pants2.jpg',
       price: 95,
       brand: 'Zara',
       rating: 3.5,
       numReviews: 7,
-      countInStock: 20,
       description: 'A popular pants',
+
+      colors: [
+        {
+          name: 'Black',
+          images: ['/images/pants2.jpg'],
+          sizes: [
+            { name: 'M', countInStock: 10 },
+            { name: 'L', countInStock: 6 },
+          ],
+        },
+      ],
     },
+
     {
       name: 'Classic Pants',
       slug: 'classic-pants',
-      category: 'Pants',
+      category: 'robe-de-chambre',
       image: '/images/pants3.jpg',
       price: 75,
       brand: 'Casely',
       rating: 2.4,
       numReviews: 14,
-      countInStock: 20,
       description: 'A popular pants',
+
+      colors: [
+        {
+          name: 'Brown',
+          images: ['/images/pants3.jpg'],
+          sizes: [
+            { name: 'M', countInStock: 7 },
+            { name: 'L', countInStock: 13 },
+          ],
+        },
+      ],
     },
   ],
 };

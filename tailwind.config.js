@@ -4,7 +4,16 @@ module.exports = {
     './components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        script: ['"Playfair Script"', 'cursive'],
+        sans: ['Montserrat', 'sans-serif'],
+      },
+      colors: {
+        brandGold: '#020100',
+      },
+    },
   },
   plugins: [],
 };
+

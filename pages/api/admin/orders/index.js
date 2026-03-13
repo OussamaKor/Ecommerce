@@ -3,17 +3,31 @@ import Order from '../../../../models/Order';
 import db from '../../../../utils/db';
 
 const handler = async (req, res) => {
-  const user = await getToken({ req });
-  if (!user || (user && !user.isAdmin)) {
-    return res.status(401).send('signin required');
+  const token = await getToken({ req });
+
+ 
+  if (!token || !token.isAdmin) {
+    return res.status(401).json({ message: 'Accès refusé - Admin requis' });
   }
-  if (req.method === 'GET') {
+
+  if (req.method !== 'GET') {
+    return res.status(405).json({ message: 'Méthode non autorisée' });
+  }
+
+  try {
     await db.connect();
-    const orders = await Order.find({}).populate('user', 'name');
+
+    // ⚠️ Important : garder commandes guest aussi
+    const orders = await Order.find({})
+      .populate('user', 'name') // si user null => pas d'erreur
+      .sort({ createdAt: -1 });
+
     await db.disconnect();
-    res.send(orders);
-  } else {
-    return res.status(400).send({ message: 'Method not allowed' });
+
+    res.status(200).json(orders);
+  } catch (error) {
+    await db.disconnect();
+    res.status(500).json({ message: 'Erreur serveur' });
   }
 };
 

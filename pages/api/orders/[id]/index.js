@@ -1,19 +1,30 @@
-// /api/orders/:id
-import { getToken } from 'next-auth/jwt';
+// pages/api/orders/[id].js
+
 import Order from '../../../../models/Order';
 import db from '../../../../utils/db';
 
 const handler = async (req, res) => {
-  const user = await getToken({ req });
-  if (!user) {
-    return res.status(401).send('signin required');
+  if (req.method !== 'GET') {
+    return res.status(405).json({ message: 'Méthode non autorisée' });
   }
 
-  await db.connect();
+  try {
+    await db.connect();
 
-  const order = await Order.findById(req.query.id);
-  await db.disconnect();
-  res.send(order);
+    const order = await Order.findById(req.query.id);
+
+    if (!order) {
+      await db.disconnect();
+      return res.status(404).json({ message: 'Commande introuvable' });
+    }
+
+    await db.disconnect();
+    res.status(200).json(order);
+
+  } catch (error) {
+    await db.disconnect();
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
 };
 
 export default handler;

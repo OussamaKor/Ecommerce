@@ -86,5 +86,3 @@ function OrderHistoryScreen() {
   );
 }
 
-OrderHistoryScreen.auth = true;
-export default OrderHistoryScreen;

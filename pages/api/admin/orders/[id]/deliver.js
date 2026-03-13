@@ -1,27 +1,27 @@
-import { getToken } from 'next-auth/jwt';
-import Order from '../../../../../models/Order';
+// pages/api/admin/orders/[id]/deliver.js
+
 import db from '../../../../../utils/db';
+import Order from '../../../../../models/Order';
 
-const handler = async (req, res) => {
-  const user = await getToken({ req });
-  if (!user || (user && !user.isAdmin)) {
-    return res.status(401).send('Error: signin required');
+export default async function handler(req, res) {
+  if (req.method !== 'PUT') {
+    return res.status(405).end();
   }
+
   await db.connect();
-  const order = await Order.findById(req.query.id);
-  if (order) {
-    order.isDelivered = true;
-    order.deliveredAt = Date.now();
-    const deliveredOrder = await order.save();
-    await db.disconnect();
-    res.send({
-      message: 'order delivered successfully',
-      order: deliveredOrder,
-    });
-  } else {
-    await db.disconnect();
-    res.status(404).send({ message: 'Error: order not found' });
-  }
-};
 
-export default handler;
+  const order = await Order.findById(req.query.id);
+
+  if (!order) {
+    await db.disconnect();
+    return res.status(404).json({ message: 'Commande introuvable' });
+  }
+
+  order.isDelivered = !order.isDelivered;
+  order.deliveredAt = order.isDelivered ? new Date() : null;
+
+  await order.save();
+  await db.disconnect();
+
+  res.json(order);
+}

@@ -47,8 +47,9 @@ const putHandler = async (req, res) => {
 const deleteHandler = async (req, res) => {
   await db.connect();
   const product = await Product.findById(req.query.id);
+
   if (product) {
-    await product.remove();
+    await product.deleteOne();
     await db.disconnect();
     res.send({ message: 'Product deleted successfully' });
   } else {

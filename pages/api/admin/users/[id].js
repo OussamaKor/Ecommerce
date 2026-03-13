@@ -16,18 +16,29 @@ const handler = async (req, res) => {
 };
 
 const deleteHandler = async (req, res) => {
-  await db.connect();
-  const user = await User.findById(req.query.id);
-  if (user) {
-    if (user.email === 'admin@example.com') {
-      return res.status(400).send({ message: 'Can not delete admin' });
+  try {
+    await db.connect();
+
+    const user = await User.findById(req.query.id);
+
+    if (!user) {
+      await db.disconnect();
+      return res.status(404).send({ message: 'Utilisateur introuvable' });
     }
-    await user.remove();
+
+    if (user.email === 'admin@example.com') {
+      await db.disconnect();
+      return res.status(400).send({ message: 'Impossible de supprimer cet admin' });
+    }
+
+    await User.findByIdAndDelete(req.query.id);
+
     await db.disconnect();
-    res.send({ message: 'User Deleted' });
-  } else {
+    res.status(200).send({ message: 'Utilisateur supprimé' });
+
+  } catch (error) {
     await db.disconnect();
-    res.status(404).send({ message: 'User Not Found' });
+    res.status(500).send({ message: error.message });
   }
 };
 

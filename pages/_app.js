@@ -24,17 +24,17 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
 
 function Auth({ children, adminOnly }) {
   const router = useRouter();
-  const { status, data: session } = useSession({
-    required: true,
-    onUnauthenticated() {
-      router.push('/unauthorized?message=login required');
-    },
-  });
+  const { status, data: session } = useSession();
+  
   if (status === 'loading') {
     return <div>Loading...</div>;
   }
-  if (adminOnly && !session.user.isAdmin) {
-    router.push('/unauthorized?message=admin login required');
+
+  if (adminOnly) {
+    if (!session?.user?.isAdmin) {
+      router.push('/admin/login');
+      return null;
+    }
   }
 
   return children;
