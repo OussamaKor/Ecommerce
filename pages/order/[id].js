@@ -129,6 +129,55 @@ function OrderScreen() {
             Commande {orderId}
           </h1>
 
+          {/* MESSAGE DE CONFIRMATION */}
+          <div className="mb-6 rounded-xl border-2 border-green-200 bg-green-50 p-6 shadow-sm">
+            <div className="flex items-start gap-4">
+              {/* Icône de validation */}
+              <div className="flex-shrink-0">
+                <svg 
+                  className="h-8 w-8 text-green-600" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" 
+                  />
+                </svg>
+              </div>
+
+              {/* Contenu du message */}
+              <div className="flex-1">
+                <h3 className="mb-3 text-lg font-semibold text-green-800">
+                  ✅ Votre commande a été enregistrée avec succès !
+                </h3>
+                <div className="space-y-2 text-sm text-green-700">
+                  <p className="flex items-start gap-2">
+                    <span className="mt-1 text-green-600">📞</span>
+                    <span>
+                      <strong>Notre équipe vous contactera très prochainement</strong> par téléphone pour confirmer votre commande et les détails de livraison.
+                    </span>
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="mt-1 text-green-600">💰</span>
+                    <span>
+                      <strong>Le paiement se fera à la livraison</strong> — Vous réglez directement au livreur lors de la réception de votre colis.
+                    </span>
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="mt-1 text-green-600">📦</span>
+                    <span>
+                      Merci pour votre confiance ! Nous préparons votre commande avec soin.
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {loading ? (
             <div className="rounded-lg bg-white p-6 shadow">
               Chargement…
