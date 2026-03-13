@@ -16,6 +16,7 @@ function reducer(state, action) {
       return state;
   }
 }
+
 function OrderHistoryScreen() {
   const [{ loading, error, orders }, dispatch] = useReducer(reducer, {
     loading: true,
@@ -85,4 +86,6 @@ function OrderHistoryScreen() {
     </Layout>
   );
 }
+
+export default OrderHistoryScreen;
 

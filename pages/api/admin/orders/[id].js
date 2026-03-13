@@ -1,5 +1,5 @@
-import db from '../../../utils/db';
-import Order from '../../../models/Order';
+import db from '../../../../utils/db';
+import Order from '../../../../models/Order';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {

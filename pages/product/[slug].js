@@ -1,4 +1,3 @@
-import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -19,12 +18,8 @@ export default function ProductScreen({ product }) {
   const { state, dispatch } = useContext(Store);
   const router = useRouter();
 
-  if (!product) {
-    return <Layout title="Product Not Found">Product Not Found</Layout>;
-  }
-
   /* ---------- VARIANTS ---------- */
-  const colors = product.colors || [];
+  const colors = product?.colors || [];
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState(null);
 
@@ -33,11 +28,12 @@ export default function ProductScreen({ product }) {
 
   /* ---------- IMAGES ---------- */
   const imagesToDisplay = useMemo(() => {
+    if (!product) return [];
     if (!colors.length) return [product.image];
     return selectedColor?.images?.length
       ? selectedColor.images
       : [product.image];
-  }, [colors, selectedColor, product.image]);
+  }, [colors, selectedColor, product]);
 
   /* ---------- CAROUSEL ---------- */
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -49,6 +45,10 @@ export default function ProductScreen({ product }) {
   useEffect(() => {
     setSelectedSize(null);
   }, [selectedColorIndex]);
+
+  if (!product) {
+    return <Layout title="Product Not Found">Product Not Found</Layout>;
+  }
 
   const nextImage = () => {
     setCurrentImageIndex((prev) =>

@@ -1,4 +1,4 @@
-import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
+import { usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
@@ -46,7 +46,7 @@ function OrderScreen() {
   const { query } = useRouter();
   const orderId = query.id;
 
-  const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
+  const [, paypalDispatch] = usePayPalScriptReducer();
 
   const [
     {
@@ -54,7 +54,6 @@ function OrderScreen() {
       error,
       order,
       successPay,
-      loadingPay,
       loadingDeliver,
       successDeliver,
     },
@@ -102,36 +101,13 @@ function OrderScreen() {
     shippingAddress,
     orderItems,
     itemsPrice,
-    totalPrice,
     isPaid,
-    paidAt,
     isDelivered,
     deliveredAt,
   } = order;
 
-  function createOrder(data, actions) {
-    return actions.order.create({
-      purchase_units: [{ amount: { value: totalPrice } }],
-    });
-  }
 
-  function onApprove(data, actions) {
-    return actions.order.capture().then(async (details) => {
-      try {
-        dispatch({ type: 'PAY_REQUEST' });
-        await axios.put(`/api/orders/${order._id}/pay`, details);
-        dispatch({ type: 'PAY_SUCCESS' });
-        toast.success('Commande payée avec succès');
-      } catch (err) {
-        dispatch({ type: 'PAY_FAIL', payload: getError(err) });
-        toast.error(getError(err));
-      }
-    });
-  }
 
-  function onError(err) {
-    toast.error(getError(err));
-  }
 
   async function deliverOrderHandler() {
     try {
@@ -263,7 +239,7 @@ function OrderScreen() {
                     </li>
                     <li className="flex justify-between border-t pt-3 text-base font-semibold text-gray-800">
                       <span>Total</span>
-                      <span>{totalPrice} DT</span>
+                      <span>{itemsPrice} DT</span>
                     </li>
                   </ul>
 

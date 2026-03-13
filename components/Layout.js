@@ -9,7 +9,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Store } from '../utils/Store';
 import DropdownLink from './DropdownLink';
 import { useRouter } from 'next/router';
-import SearchIcon from '@heroicons/react/24/outline/MagnifyingGlassIcon';
 import { FaInstagram } from 'react-icons/fa';
 import { ShoppingBagIcon } from '@heroicons/react/24/outline';
 import categories from '../utils/categories';
@@ -30,14 +29,8 @@ export default function Layout({ title, children }) {
     signOut({ callbackUrl: '/login' });
   };
 
-  const [query, setQuery] = useState('');
-
   const router = useRouter();
   const isAdminRoute = router.pathname.startsWith('/admin');
-  const submitHandler = (e) => {
-    e.preventDefault();
-    router.push(`/search?query=${query}`);
-  };
 
   return (
     <>
@@ -163,7 +156,6 @@ export default function Layout({ title, children }) {
                   </span>
                 </Link>
                 <p className="mt-4 text-sm leading-relaxed text-neutral-600">
-                  Rue Ladhikia, AFH1<br />
                   Nabeul
                 </p>
               </div>
@@ -185,7 +177,7 @@ export default function Layout({ title, children }) {
                 </h3>
 
                 <a
-                  href="https://www.instagram.com/oussama.kordoghli"
+                  href="https://www.instagram.com/mayastyle.officie"
                   target="_blank"
                   rel="noreferrer"
                   className="mt-4 inline-flex items-center gap-3 text-sm text-neutral-600 hover:text-neutral-900 transition"
@@ -200,7 +192,7 @@ export default function Layout({ title, children }) {
             <div className="mt-14 border-t border-neutral-300 pt-6 text-center text-xs text-neutral-500">
               © {new Date().getFullYear()} Nom d&apos;entreprise — Built by{' '}
               <a
-                href="https://www.instagram.com/oussama.kordoghli"
+                href="https://www.instagram.com/oussama__kor?igsh=MjUyOTB4c3BtZm51"
                 target="_blank"
                 rel="noreferrer"
                 className="font-medium hover:text-neutral-900 transition"

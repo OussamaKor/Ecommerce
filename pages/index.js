@@ -6,9 +6,6 @@ import ProductItem from '../components/ProductItem';
 import Product from '../models/Product';
 import db from '../utils/db';
 import { Store } from '../utils/Store';
-import { Carousel } from 'react-responsive-carousel';
-import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import Link from 'next/link';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
 /* ---------- CATEGORY LABELS ---------- */
@@ -20,7 +17,7 @@ const CATEGORY_LABELS = {
   'claquettes': 'Claquettes',
 };
 
-export default function Home({ products, featuredProducts }) {
+export default function Home({ products }) {
   const { state, dispatch } = useContext(Store);
   const { cart } = state;
 
