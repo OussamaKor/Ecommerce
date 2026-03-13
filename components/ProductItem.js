@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
 import React from 'react';
-import { HeartIcon, EyeIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
 
 export default function ProductItem({ product, addToCartHandler }) {
   return (
