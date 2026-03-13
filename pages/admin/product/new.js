@@ -10,9 +10,7 @@ export default function ProductCreateScreen() {
 
     /* ---------- INFOS DE BASE ---------- */
     const [name, setName] = useState('');
-    const [slug, setSlug] = useState('');
     const [category, setCategory] = useState('');
-    const [brand, setBrand] = useState('');
     const [price, setPrice] = useState('');
     const [description, setDescription] = useState('');
 
@@ -47,17 +45,29 @@ export default function ProductCreateScreen() {
     const submitHandler = async (e) => {
         e.preventDefault();
 
-        if (!name || !slug || !price || colors.length === 0) {
+        if (!name || !price || colors.length === 0) {
             toast.error('Veuillez remplir tous les champs obligatoires');
             return;
         }
+
+        // Générer le slug automatiquement à partir du nom avec un ID unique
+        const baseSlug = name
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '') // Enlever les accents
+            .replace(/[^a-z0-9]+/g, '-') // Remplacer les caractères spéciaux par des tirets
+            .replace(/^-+|-+$/g, ''); // Enlever les tirets au début et à la fin
+
+        // Ajouter un identifiant unique pour éviter les doublons
+        const uniqueId = Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+        const slug = `${baseSlug}-${uniqueId}`;
 
         try {
             const { data } = await axios.post('/api/admin/products/create', {
                 name,
                 slug,
                 category,
-                brand,
+                brand: 'Ma&ya', // Marque définie automatiquement
                 price,
                 description,
                 colors,
@@ -89,12 +99,6 @@ export default function ProductCreateScreen() {
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
-                        <input
-                            className="input"
-                            placeholder="Slug (url) *"
-                            value={slug}
-                            onChange={(e) => setSlug(e.target.value)}
-                        />
                         <select
                             className="input"
                             value={category}
@@ -107,12 +111,6 @@ export default function ProductCreateScreen() {
                                 </option>
                             ))}
                         </select>
-                        <input
-                            className="input"
-                            placeholder="Marque"
-                            value={brand}
-                            onChange={(e) => setBrand(e.target.value)}
-                        />
                         <input
                             className="input"
                             type="number"

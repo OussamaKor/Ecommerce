@@ -19,9 +19,6 @@ export default function ProductItem({ product, addToCartHandler }) {
 
         {/* ACTIONS OVERLAY */}
         <div className="absolute left-3 top-3 flex flex-col gap-2 opacity-0 transition group-hover:opacity-100">
-          <button className="rounded-full bg-white p-2 shadow hover:bg-gray-100">
-            <HeartIcon className="h-5 w-5" />
-          </button>
           <Link
             href={`/product/${product.slug}`}
             className="rounded-full bg-white p-2 shadow hover:bg-gray-100"
