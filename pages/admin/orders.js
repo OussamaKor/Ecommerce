@@ -101,93 +101,156 @@ export default function AdminOrderScreen() {
                   {error}
                 </div>
               ) : (
-                <div className="rounded-xl bg-white shadow">
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full text-sm">
-                      <thead className="bg-gray-100 text-xs uppercase text-gray-500">
-                        <tr>
-                          <th className="px-4 py-3 text-left">ID</th>
-                          <th className="px-4 py-3 text-left">Client</th>
-                          <th className="px-4 py-3 text-left">Téléphone</th>
-                          <th className="px-4 py-3 text-left">Date</th>
-                          <th className="px-4 py-3 text-left">Total</th>
-                          <th className="px-4 py-3 text-left">Paiement</th>
-                          <th className="px-4 py-3 text-left">Livraison</th>
-                          <th className="px-4 py-3 text-left">Détails</th>
-                        </tr>
-                      </thead>
+                <>
+                  {/* VUE MOBILE - CARTES */}
+                  <div className="space-y-4 md:hidden">
+                    {orders.map((order) => (
+                      <div
+                        key={order._id}
+                        className="rounded-xl bg-white p-4 shadow"
+                      >
+                        <div className="mb-3 flex items-center justify-between">
+                          <span className="text-xs text-gray-500">
+                            ID: {order._id.substring(20, 24)}
+                          </span>
+                          <span className="text-xs text-gray-500">
+                            {order.createdAt.substring(0, 10)}
+                          </span>
+                        </div>
 
-                      <tbody>
-                        {orders.map((order) => (
-                          <tr
-                            key={order._id}
-                            className="border-b last:border-none hover:bg-gray-50"
+                        <div className="space-y-2 text-sm">
+                          <div>
+                            <span className="font-medium text-gray-700">Client:</span>{' '}
+                            {order.shippingAddress?.fullName}
+                          </div>
+                          <div>
+                            <span className="font-medium text-gray-700">Tél:</span>{' '}
+                            {order.shippingAddress?.phone}
+                          </div>
+                          <div>
+                            <span className="font-medium text-gray-700">Total:</span>{' '}
+                            <span className="font-semibold">{order.totalPrice} DT</span>
+                          </div>
+                        </div>
+
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          <button
+                            onClick={() => togglePaid(order._id)}
+                            className={`rounded-full px-3 py-1 text-xs font-medium transition ${
+                              order.isPaid
+                                ? 'bg-green-100 text-green-700'
+                                : 'bg-red-100 text-red-700'
+                            }`}
                           >
-                            <td className="px-4 py-3 font-medium">
-                              {order._id.substring(20, 24)}
-                            </td>
+                            {order.isPaid ? '✓ Payée' : '✗ Non payée'}
+                          </button>
 
-                            {/* Nom complet */}
-                            <td className="px-4 py-3">
-                              {order.shippingAddress?.fullName}
-                            </td>
+                          <button
+                            onClick={() => toggleDelivered(order._id)}
+                            className={`rounded-full px-3 py-1 text-xs font-medium transition ${
+                              order.isDelivered
+                                ? 'bg-green-100 text-green-700'
+                                : 'bg-yellow-100 text-yellow-700'
+                            }`}
+                          >
+                            {order.isDelivered ? '✓ Livrée' : '⏱ En attente'}
+                          </button>
+                        </div>
 
-                            {/* Téléphone */}
-                            <td className="px-4 py-3">
-                              {order.shippingAddress?.phone}
-                            </td>
-
-                            <td className="px-4 py-3">
-                              {order.createdAt.substring(0, 10)}
-                            </td>
-
-                            <td className="px-4 py-3 font-medium">
-                              {order.totalPrice} DT
-                            </td>
-
-                            {/* TOGGLE PAIEMENT */}
-                            <td className="px-4 py-3">
-                              <button
-                                onClick={() => togglePaid(order._id)}
-                                className={`rounded-full px-3 py-1 text-xs font-medium transition ${
-                                  order.isPaid
-                                    ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                                    : 'bg-red-100 text-red-700 hover:bg-red-200'
-                                }`}
-                              >
-                                {order.isPaid ? 'Payée' : 'Non payée'}
-                              </button>
-                            </td>
-
-                            {/* TOGGLE LIVRAISON */}
-                            <td className="px-4 py-3">
-                              <button
-                                onClick={() => toggleDelivered(order._id)}
-                                className={`rounded-full px-3 py-1 text-xs font-medium transition ${
-                                  order.isDelivered
-                                    ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                                    : 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
-                                }`}
-                              >
-                                {order.isDelivered ? 'Livrée' : 'En attente'}
-                              </button>
-                            </td>
-
-                            <td className="px-4 py-3">
-                              <Link
-                                href={`/order/${order._id}`}
-                                className="font-medium text-stone-600 hover:underline"
-                              >
-                                Voir
-                              </Link>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-
-                    </table>
+                        <Link
+                          href={`/order/${order._id}`}
+                          className="mt-3 block rounded-lg bg-stone-600 py-2 text-center text-sm font-medium text-white hover:bg-stone-700"
+                        >
+                          Voir détails
+                        </Link>
+                      </div>
+                    ))}
                   </div>
-                </div>
+
+                  {/* VUE DESKTOP - TABLEAU */}
+                  <div className="hidden rounded-xl bg-white shadow md:block">
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full text-sm">
+                        <thead className="bg-gray-100 text-xs uppercase text-gray-500">
+                          <tr>
+                            <th className="px-4 py-3 text-left">ID</th>
+                            <th className="px-4 py-3 text-left">Client</th>
+                            <th className="px-4 py-3 text-left">Téléphone</th>
+                            <th className="px-4 py-3 text-left">Date</th>
+                            <th className="px-4 py-3 text-left">Total</th>
+                            <th className="px-4 py-3 text-left">Paiement</th>
+                            <th className="px-4 py-3 text-left">Livraison</th>
+                            <th className="px-4 py-3 text-left">Détails</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {orders.map((order) => (
+                            <tr
+                              key={order._id}
+                              className="border-b last:border-none hover:bg-gray-50"
+                            >
+                              <td className="px-4 py-3 font-medium">
+                                {order._id.substring(20, 24)}
+                              </td>
+
+                              <td className="px-4 py-3">
+                                {order.shippingAddress?.fullName}
+                              </td>
+
+                              <td className="px-4 py-3">
+                                {order.shippingAddress?.phone}
+                              </td>
+
+                              <td className="px-4 py-3">
+                                {order.createdAt.substring(0, 10)}
+                              </td>
+
+                              <td className="px-4 py-3 font-medium">
+                                {order.totalPrice} DT
+                              </td>
+
+                              <td className="px-4 py-3">
+                                <button
+                                  onClick={() => togglePaid(order._id)}
+                                  className={`rounded-full px-3 py-1 text-xs font-medium transition ${
+                                    order.isPaid
+                                      ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                                      : 'bg-red-100 text-red-700 hover:bg-red-200'
+                                  }`}
+                                >
+                                  {order.isPaid ? 'Payée' : 'Non payée'}
+                                </button>
+                              </td>
+
+                              <td className="px-4 py-3">
+                                <button
+                                  onClick={() => toggleDelivered(order._id)}
+                                  className={`rounded-full px-3 py-1 text-xs font-medium transition ${
+                                    order.isDelivered
+                                      ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                                      : 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
+                                  }`}
+                                >
+                                  {order.isDelivered ? 'Livrée' : 'En attente'}
+                                </button>
+                              </td>
+
+                              <td className="px-4 py-3">
+                                <Link
+                                  href={`/order/${order._id}`}
+                                  className="font-medium text-stone-600 hover:underline"
+                                >
+                                  Voir
+                                </Link>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </>
               )}
             </div>
 

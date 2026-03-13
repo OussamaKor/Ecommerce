@@ -49,7 +49,7 @@ export default function Layout({ title, children }) {
             {/* LOGO */}
             <Link href="/" className="group flex flex-col leading-none">
               <span className="font-script text-3xl text-brandGold tracking-wide">
-                ma&ya
+                Maya Style
               </span>
               <span className="mt-1 text-[10px] uppercase tracking-[0.35em] text-neutral-500">
                 Douce nuit
@@ -148,7 +148,7 @@ export default function Layout({ title, children }) {
               <div className="relative">
                 <Link href="/" className="group flex flex-col leading-none">
                   <span className="font-script text-3xl text-brandGold tracking-wide">
-                    ma&ya
+                    Maya Style
                   </span>
 
                   <span className="mt-1 text-[10px] font-sans uppercase tracking-[0.35em] text-neutral-500">

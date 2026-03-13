@@ -72,17 +72,17 @@ export default function ProductCreateScreen() {
 
     return (
         <Layout title="Créer un produit">
-            <div className="min-h-screen bg-gray-50 py-10">
+            <div className="min-h-screen bg-gray-50 py-4 md:py-10 px-2">
                 <form
                     onSubmit={submitHandler}
-                    className="mx-auto max-w-3xl rounded-xl bg-white p-8 shadow"
+                    className="mx-auto max-w-3xl rounded-xl bg-white p-4 md:p-8 shadow"
                 >
-                    <h1 className="mb-8 text-2xl font-semibold">
+                    <h1 className="mb-6 md:mb-8 text-xl md:text-2xl font-semibold">
                         Créer un nouveau produit
                     </h1>
 
                     {/* ---------- INFOS PRODUIT ---------- */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input
                             className="input"
                             placeholder="Nom du produit *"
@@ -139,9 +139,9 @@ export default function ProductCreateScreen() {
                         {colors.map((color, colorIndex) => (
                             <div
                                 key={colorIndex}
-                                className="mb-6 rounded-xl border p-4"
+                                className="mb-6 rounded-xl border p-3 md:p-4"
                             >
-                                <div className="flex items-center gap-4 mb-4">
+                                <div className="flex flex-wrap items-center gap-3 md:gap-4 mb-4">
                                     {/* COLOR PICKER */}
                                     <input
                                         type="color"
@@ -160,7 +160,7 @@ export default function ProductCreateScreen() {
                                         style={{ backgroundColor: color.name }}
                                     />
 
-                                    <span className="text-sm text-gray-600">
+                                    <span className="text-xs md:text-sm text-gray-600">
                                         {color.name}
                                     </span>
                                 </div>
@@ -171,7 +171,7 @@ export default function ProductCreateScreen() {
                                     onChange={(e) =>
                                         uploadImageHandler(e.target.files[0], colorIndex)
                                     }
-                                    className="mb-3"
+                                    className="mb-3 w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-stone-100 file:text-stone-700 hover:file:bg-stone-200 truncate"
                                 />
 
                                 <div className="flex gap-2 mb-4">
@@ -190,53 +190,66 @@ export default function ProductCreateScreen() {
                                     {color.sizes.map((size, sizeIndex) => (
                                         <div
                                             key={sizeIndex}
-                                            className="flex gap-3 items-center"
+                                            className="flex flex-col sm:flex-row gap-2 sm:gap-3"
                                         >
-                                            <input
-                                                className="input flex-1"
-                                                placeholder="Taille (ex : S, M, 38)"
-                                                value={size.name}
-                                                onChange={(e) => {
-                                                    const updated = [...colors];
-                                                    updated[colorIndex].sizes[sizeIndex].name =
-                                                        e.target.value;
-                                                    setColors(updated);
-                                                }}
-                                            />
-                                            <input
-                                                className="input w-32"
-                                                type="number"
-                                                placeholder="Stock"
-                                                value={size.countInStock}
-                                                onChange={(e) => {
-                                                    const updated = [...colors];
-                                                    updated[colorIndex].sizes[sizeIndex].countInStock =
-                                                        Number(e.target.value);
-                                                    setColors(updated);
-                                                }}
-                                            />
-                                            {color.sizes.length > 1 && (
-                                                <button
-                                                    type="button"
-                                                    className="text-sm text-red-500"
-                                                    onClick={() => {
+                                            <div className="flex-1">
+                                                <label className="block text-xs text-gray-500 mb-1">
+                                                    Taille / Pointure
+                                                </label>
+                                                <input
+                                                    className="input w-full"
+                                                    placeholder="ex : S, M, 38, 40"
+                                                    value={size.name}
+                                                    onChange={(e) => {
                                                         const updated = [...colors];
-                                                        updated[colorIndex].sizes = updated[
-                                                            colorIndex
-                                                        ].sizes.filter((_, i) => i !== sizeIndex);
+                                                        updated[colorIndex].sizes[sizeIndex].name =
+                                                            e.target.value;
                                                         setColors(updated);
                                                     }}
-                                                >
-                                                    ✕
-                                                </button>
-                                            )}
+                                                />
+                                            </div>
+                                            <div className="flex gap-2 items-end">
+                                                <div className="flex-1 sm:w-32">
+                                                    <label className="block text-xs text-gray-500 mb-1">
+                                                        Quantité en stock
+                                                    </label>
+                                                    <input
+                                                        className="input w-full"
+                                                        type="number"
+                                                        min="0"
+                                                        placeholder="0"
+                                                        value={size.countInStock === 0 ? '' : size.countInStock}
+                                                        onChange={(e) => {
+                                                            const updated = [...colors];
+                                                            updated[colorIndex].sizes[sizeIndex].countInStock =
+                                                                e.target.value === '' ? 0 : Number(e.target.value);
+                                                            setColors(updated);
+                                                        }}
+                                                    />
+                                                </div>
+                                                {color.sizes.length > 1 && (
+                                                    <button
+                                                        type="button"
+                                                        className="px-3 py-2 text-sm text-red-500"
+                                                        onClick={() => {
+                                                            const updated = [...colors];
+                                                            updated[colorIndex].sizes = updated[
+                                                                colorIndex
+                                                            ].sizes.filter((_, i) => i !== sizeIndex);
+                                                            setColors(updated);
+                                                        }}
+                                                    >
+                                                        ✕
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
 
                                 <button
                                     type="button"
-                                    className="mt-3 text-sm text-stone-600 underline"
+                                    className="mt-3 text-xs md:text-sm text-stone-600 underline"
                                     onClick={() => {
                                         const updated = [...colors];
                                         updated[colorIndex].sizes.push({
@@ -252,7 +265,7 @@ export default function ProductCreateScreen() {
                                 {colors.length > 1 && (
                                     <button
                                         type="button"
-                                        className="mt-4 block text-sm text-red-500 underline"
+                                        className="mt-4 block text-xs md:text-sm text-red-500 underline"
                                         onClick={() =>
                                             setColors(colors.filter((_, i) => i !== colorIndex))
                                         }
@@ -275,13 +288,13 @@ export default function ProductCreateScreen() {
                                     },
                                 ])
                             }
-                            className="default-button"
+                            className="w-full sm:w-auto default-button"
                         >
                             + Ajouter une couleur
                         </button>
                     </div>
 
-                    <button className="mt-10 w-full rounded-lg bg-black py-3 text-sm font-semibold text-white transition hover:bg-neutral-800 active:scale-[0.98]">
+                    <button className="mt-6 md:mt-10 w-full rounded-lg bg-black py-3 text-sm md:text-base font-semibold text-white transition hover:bg-neutral-800 active:scale-[0.98]">
                         Créer le produit
                     </button>
 

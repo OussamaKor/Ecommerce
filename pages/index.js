@@ -59,39 +59,75 @@ export default function Home({ products }) {
       <div className="min-h-screen w-full">
 
         {/* ---------- HERO / CAROUSEL ---------- */}
-        <div className="relative w-full h-[95vh] overflow-hidden">
+        <div className="relative w-full h-[70vh] md:h-[85vh] lg:h-[95vh] overflow-hidden">
 
-          {/* IMAGE avec léger zoom */}
+          {/* IMAGE DESKTOP (caché sur mobile) */}
           <img
             src="/images/profile_photo.png"
             alt="Ma&ya Douce Nuit"
-            className="w-full h-full object-cover scale-105 transition-transform duration-[6000ms] hover:scale-110"
+            className="hidden md:block w-full h-full object-cover scale-105 transition-transform duration-[6000ms] hover:scale-110"
+          />
+
+          {/* IMAGE MOBILE (caché sur desktop) */}
+          <img
+            src="/images/profile_mobile.png"
+            alt="Ma&ya Douce Nuit"
+            className="block md:hidden w-full h-full object-cover object-center"
           />
 
           {/* Overlay dégradé plus stylé */}
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/20" />
 
           {/* CONTENU */}
-          <div className="absolute inset-0 flex flex-col items-start justify-center text-left text-white px-12 md:px-24">
+          <div className="absolute inset-0 flex flex-col items-start justify-center text-white px-6 sm:px-10 md:px-16 lg:px-20">
 
-            <span className="uppercase tracking-[0.4em] text-sm text-neutral-300 mb-6">
-              Nouvelle Collection
-            </span>
+            {/* Small accent line */}
+            <div className="w-12 h-[2px] bg-white/80 mb-6 md:mb-8"></div>
 
-            <h1 className="text-5xl md:text-7xl font-extralight leading-tight mb-6 drop-shadow-xl">
+            {/* Main title - elegant and readable */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl 
+                          font-light tracking-tight leading-[1.1] 
+                          mb-6 md:mb-8
+                          [text-shadow:_0_2px_20px_rgb(0_0_0_/_60%)]">
               Élégance.<br />
               Douceur.<br />
               Féminité.
             </h1>
 
-            <p className="max-w-lg text-lg md:text-xl text-neutral-200 mb-10 leading-relaxed">
-              Sublimez vos nuits avec des pièces délicates pensées pour révéler votre beauté naturelle.
+            {/* Subtitle - clean and minimal */}
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl 
+                        text-white/90 font-light leading-relaxed
+                        mb-8 md:mb-12 max-w-xl
+                        [text-shadow:_0_1px_10px_rgb(0_0_0_/_50%)]">
+              Sublimez vos nuits avec des pièces délicates<br className="hidden sm:block" />
+              pensées pour révéler votre beauté naturelle.
             </p>
+
+            {/* CTA Button - minimal and elegant */}
+            <a 
+              href="#produits" 
+              className="group inline-flex items-center gap-2
+                       text-sm sm:text-base tracking-wider uppercase
+                       text-white font-light
+                       border-b-2 border-white/60
+                       pb-2 
+                       hover:border-white
+                       transition-all duration-300">
+              Découvrir la collection
+              <svg 
+                className="w-4 h-4 transform transition-transform duration-300 group-hover:translate-x-1" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </a>
+
           </div>
         </div>
 
         {/* ---------- CONTENT ---------- */}
-        <div className="container mx-auto mt-16 px-4">
+        <div id="produits" className="container mx-auto mt-16 px-4 scroll-mt-8">
 
           <div className="mb-12 text-center">
             <span className="mx-auto mb-4 block h-1 w-9 rounded bg-neutral-800"></span>
