@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import imageCompression from 'browser-image-compression';
 import Layout from '../../../components/Layout';
 import categories from '../../../utils/categories';
 
@@ -25,10 +26,26 @@ export default function ProductCreateScreen() {
 
     /* ---------- UPLOAD IMAGE ---------- */
     const uploadImageHandler = async (file, colorIndex) => {
-        const formData = new FormData();
-        formData.append('image', file);
-
         try {
+            // Options de compression
+            const options = {
+                maxSizeMB: 1, // Taille maximale en MB
+                maxWidthOrHeight: 1920, // Largeur/hauteur maximale
+                useWebWorker: true, // Plus rapide avec un web worker
+                fileType: 'image/jpeg', // Convertir en JPEG pour meilleure compression
+            };
+
+            // Compresser l'image avant l'upload
+            const compressedFile = await imageCompression(file, options);
+            
+            console.log(
+                `Taille originale: ${(file.size / 1024 / 1024).toFixed(2)} MB, ` +
+                `Taille compressée: ${(compressedFile.size / 1024 / 1024).toFixed(2)} MB`
+            );
+
+            const formData = new FormData();
+            formData.append('image', compressedFile);
+
             const { data } = await axios.post('/api/admin/upload', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
@@ -36,8 +53,11 @@ export default function ProductCreateScreen() {
             const updated = [...colors];
             updated[colorIndex].images.push(data);
             setColors(updated);
+            
+            toast.success('Image uploadée avec succès');
         } catch (err) {
-            toast.error('Erreur lors de l’upload de l’image');
+            console.error('Erreur upload:', err);
+            toast.error('Erreur lors de l\'upload de l\'image');
         }
     };
 
