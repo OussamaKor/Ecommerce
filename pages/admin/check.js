@@ -71,10 +71,10 @@ export default function AdminCheckScreen() {
               <h3 className="mb-2 font-semibold text-blue-900">💡 Solutions</h3>
               <ul className="space-y-2 text-sm text-blue-800">
                 {!session && (
-                  <li>• Vous devez vous connecter d'abord</li>
+                  <li>• Vous devez vous connecter d&apos;abord</li>
                 )}
                 {session && !session.user?.isAdmin && (
-                  <li>• Votre utilisateur n'a pas le statut admin dans la base de données</li>
+                  <li>• Votre utilisateur n&apos;a pas le statut admin dans la base de données</li>
                 )}
                 {!debugInfo?.env?.hasSecret && (
                   <li>• Ajoutez NEXTAUTH_SECRET dans Railway Variables</li>
