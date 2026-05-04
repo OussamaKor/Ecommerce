@@ -10,7 +10,7 @@ const handler = async (req, res) => {
   await db.connect();
 
   // Vérifie si utilisateur connecté (optionnel)
-  const user = await getToken({ req });
+  const user = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
   const newOrder = new Order({
     ...req.body,

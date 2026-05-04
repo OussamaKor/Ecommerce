@@ -3,7 +3,7 @@ import Product from '../../../../models/Product';
 import db from '../../../../utils/db';
 
 const handler = async (req, res) => {
-  const user = await getToken({ req });
+  const user = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   if (!user || !user.isAdmin) {
     return res.status(401).send({ message: 'Admin required' });
   }

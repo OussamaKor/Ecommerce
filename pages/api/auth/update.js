@@ -8,7 +8,7 @@ async function handler(req, res) {
     return res.status(400).send({ message: `${req.method} not supported` });
   }
 
-  const user = await getToken({ req });
+  const user = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   if (!user) {
     return res.status(401).send({ message: 'signin required' });
   }
