@@ -26,7 +26,9 @@ export default function Layout({ title, children }) {
   const logoutClickHandler = () => {
     Cookies.remove('cart');
     dispatch({ type: 'CART_RESET' });
-    signOut({ callbackUrl: '/login' });
+    // Rediriger vers /admin/login si l'utilisateur est admin, sinon vers /login
+    const redirectUrl = session?.user?.isAdmin ? '/admin/login' : '/login';
+    signOut({ callbackUrl: redirectUrl });
   };
 
   const router = useRouter();
