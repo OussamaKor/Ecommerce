@@ -5,8 +5,10 @@ import User from '../../../models/User';
 import db from '../../../utils/db';
 
 export default NextAuth({
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 jours
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -19,6 +21,10 @@ export default NextAuth({
       if (token?.isAdmin) session.user.isAdmin = token.isAdmin;
       return session;
     },
+  },
+  pages: {
+    signIn: '/login',
+    error: '/login',
   },
   providers: [
     CredentialsProvider({
